@@ -1,54 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import './styles/App.css';
+import * as IPFS from 'ipfs-core'
+import { calc_impact } from './app/impact';
+
+const createBlock = async (key, value, ipfs) => await ipfs.dag.put({key, value})
+const readBlock = async (block, ipfs) => await ipfs.dag.get(block)
 
 function App() {
-  const [data, setData] = useState([{}]);
-  const [state, setState] = useState([0]);
+  const [block, setBlock] = useState([{}])
+  const [impact, setImpact] = useState(0)
+  const [state, setState] = useState(0)
+  const [ipfs, setIpfs] = useState(null)
 
-  const fetchData = async params => {
-    let query = `http://localhost:8002/impact?`
-    if (Array.isArray(params)) {
-      params.map((param, index) => {
-        if (param.value) {
-          if (index > 0) query += '&'
-          query += `${param.key}=${param.value}`
-          console.log(query)
-        }
-        return param
-      })
-    }
-    else {
-      let keys = Object.keys(params)
-      let values = Object.values(params)
-      keys.map((key, index) => {
-        if (index > 0) query += '&'
-        query += `${key}=${values[index]}`
-        return key
-      })
-    }
-    console.log(query)
-    const response = await fetch(query);
-    const jsonData = await response.json();
-    console.log(jsonData);
-    setData(jsonData);
-  };
+  // const createBlock = (key, value) => new TextEncoder().encode(JSON.stringify({key, value}))
+  // const readBlock = block => new TextDecoder().decode(JSON.parse(block))
+
+  
+  
   useEffect(() => {
-    fetchData({ initial: true });
-  }, []);
+    const init = async () => {
+      let new_ipfs = await IPFS.create({ repo: 'ok' + Math.random() })
+      setIpfs(new_ipfs)
+      let put_cid = await createBlock('impact', 0, new_ipfs)
+      setBlock(put_cid)
+      setImpact(0)
+    }
+    init()
+    return () => {
+      console.log('unmounting')
+    }
+  }, [])
 
-  const handleAction = params => {
-    setState([...state, params.after])
+  // useEffect(() => {
+  //   const update = async () =>{let last_block = await readBlock(block, ipfs);console.log(last_block)}
+  //   update()
+  // }, [state])
+
+  const handleAction = async params => {
+    setState(params.state)
     console.log(params)
-    fetchData(params);
-  };
+    let impact_prediction = calc_impact({before: state, after: params.state}, params.action )
+    let put_cid = await createBlock('impact', impact_prediction, ipfs)
+    setImpact(impact_prediction.impact)
+    setBlock(put_cid)
+  }
+
 
   return (
     <div>
-      Impact: {data.impact}
+      Impact: {impact}
       <br />
-      Current State: {state[state.length-1]}
+      Current State: {state}
       <br />
-      <button type="text" name="action"  onClick={() => handleAction({action: 1, before: state[state.length-1], after: state[state.length-1]+1})}>Action!</button>
+      <button type="text" name="action" onClick={() => handleAction({ action: 1, state: state+1 })}>Action!</button>
+      <br />
+      <button type="text" name="update" onClick={async () =>{let last_block = await readBlock(block, ipfs);console.log(last_block); setImpact(last_block.value.value.impact)}}>Update From Chain !</button>
     </div>
   )
 }
