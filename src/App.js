@@ -6,10 +6,12 @@ import { calc_impact } from './app/impact';
 const createBlock = async (key, value, ipfs) => await ipfs.dag.put({key, value})
 const readBlock = async (block, ipfs) => await ipfs.dag.get(block)
 
+
 function App() {
   const [block, setBlock] = useState([{}])
   const [impact, setImpact] = useState(0)
   const [state, setState] = useState(0)
+  const [actor, setActor] = useState(crypto.randomUUID())
   const [ipfs, setIpfs] = useState(null)
 
   // const createBlock = (key, value) => new TextEncoder().encode(JSON.stringify({key, value}))
@@ -40,7 +42,7 @@ function App() {
     setState(params.state)
     console.log(params)
     let impact_prediction = calc_impact({before: state, after: params.state}, params.action )
-    let put_cid = await createBlock('impact', impact_prediction, ipfs)
+    let put_cid = await createBlock(actor+'_impact', impact_prediction, ipfs)
     setImpact(impact_prediction.impact)
     setBlock(put_cid)
   }
@@ -48,9 +50,13 @@ function App() {
 
   return (
     <div>
+      Actor: {actor}
+      <br />
       Impact: {impact}
       <br />
       Current State: {state}
+      <br />
+      Last Block: {block["/"]}
       <br />
       <button type="text" name="action" onClick={() => handleAction({ action: 1, state: state+1 })}>Action!</button>
       <br />
