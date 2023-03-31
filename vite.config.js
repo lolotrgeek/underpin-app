@@ -3,8 +3,8 @@ import viteTsconfigPaths from "vite-tsconfig-paths";
 import svgrPlugin from "vite-plugin-svgr";
 import react from '@vitejs/plugin-react'
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
-import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill'
-import nodePolyfills from 'rollup-plugin-polyfill-node';
+import inject from '@rollup/plugin-inject'
+import nodePolyfills from 'vite-plugin-node-stdlib-browser'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -17,41 +17,40 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-        buffer: "buffer",
-        crypto: "crypto-browserify",
-        stream: "stream-browserify",
-        assert: "assert",
-        http: "stream-http",
-        https: "https-browserify",
-        os: "os-browserify",
-        url: "url",
-        util: "util",
-        path: "path-browserify",
+      Buffer: "buffer",
+      crypto: "crypto-browserify",
+      stream: "stream-browserify",
+      assert: "assert",
+      http: "stream-http",
+      https: "https-browserify",
+      os: "os-browserify",
+      url: "url",
+      util: "util",
+      path: "path-browserify",
     },
-},
-  plugins: [viteTsconfigPaths(), svgrPlugin(), react()],
+  },
+  plugins: [nodePolyfills(),react()],
   optimizeDeps: { // 👈 optimizedeps
-    exclude: ["app/dialer.js"],
     esbuildOptions: {
       target: "esnext",
       // Node.js global to browser globalThis
       define: {
-        global: 'globalThis'
+        global: 'globalThis',
       },
       supported: {
         bigint: true
       },
       plugins: [
-        NodeGlobalsPolyfillPlugin({
-          buffer: true,
-          process: true,
-        }),
+        // NodeGlobalsPolyfillPlugin({
+        //   buffer: true,
+        // }),
       ]
     }
   },
 
   build: {
     target: ["esnext"], // 👈 build.target
+    minify: false,
     rollupOptions: {
       plugins: [
         // Enable rollup polyfills plugin

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './styles/App.css';
-// import OrbitDB from 'orbit-db'
-import * as IPFS from 'ipfs-core'
 import { calc_impact } from './app/impact';
+import { decodeMessage } from './app/utils.js'
+import { dialer } from './app/dialer.js'
 
 // const swarmKeyBuffer = Buffer("2F6B65792F737761726D2F70736B2F312E302E302F0A2F6261736531362F0A356238393035363166396262333532323531313233323765613333643661393634666331376636366434396432366562613262333162626339653439636461630A", "hex")
 
@@ -11,7 +11,6 @@ function App() {
   const [impact, setImpact] = useState(0)
   const [state, setState] = useState(0)
   const [actor, setActor] = useState(crypto.randomUUID())
-  const [ipfs, setIpfs] = useState(null)
   const [db, setDb] = useState(null)
 
   const writeBlock = data => new TextEncoder().encode(JSON.stringify(data))
@@ -20,6 +19,7 @@ function App() {
   useEffect(() => {
     const init = async () => {
       try {
+        const db = await (await dialer()).new_db
         setImpact(0)
       } catch (e) {
         console.log(e)
@@ -31,20 +31,6 @@ function App() {
       console.log('unmounting')
     }
   }, [])
-
-  useEffect(() => {
-    const loadOrbit = async () => {
-      try {
-        if (!ipfs) return
-        const orbitdb = await OrbitDB.createInstance(ipfs)
-        const new_db = await orbitdb.log("underpin")
-        setDb(new_db)
-      } catch (e) {
-        console.log(e)
-      }
-    }
-    loadOrbit()
-  }, [ipfs])
 
   useEffect(() => {
     const loadDB = async () => {
@@ -62,7 +48,31 @@ function App() {
     loadDB()
   }, [db])
 
+  useEffect(() => {
+    // updateStatus("ipfs is ready " + peerID.toString())
+    // // Lets log out the number of peers we have every 2 seconds
 
+    // let said_hi = 0
+
+    // ipfs.pubsub.subscribe('msg', evt => {
+    //   let msg = decodeMessage(evt.data)
+    //   updateMessage(msg)
+    // })
+
+    // setInterval(async () => {
+    //   try {
+    //     const peers = await ipfs.swarm.addrs()
+    //     updatePeerList(`Peers: ${peers.map(peer => peer.id).join(', \n')}`)
+
+    //     said_hi++
+    //     let msg = new TextEncoder().encode(JSON.stringify({ signer: peerID.toString(), value: "hello from " + peerID.toString() + " " + said_hi }))
+    //     await ipfs.pubsub.publish('msg', msg)
+
+    //   } catch (err) {
+    //     log('An error occurred trying to check our peers:', err)
+    //   }
+    // }, 2000)
+  }, [])
 
   const handleAction = async params => {
     try {
