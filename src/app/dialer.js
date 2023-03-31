@@ -8,7 +8,7 @@ import { webSockets } from '@libp2p/websockets'
 import { gossipsub } from '@chainsafe/libp2p-gossipsub'
 import { createEd25519PeerId } from '@libp2p/peer-id-factory'
 import * as IPFS from 'ipfs-core'
-import { decodeMessage } from './utils.js'
+import { decodeMessage } from '../../utils.js'
 import { pubsubPeerDiscovery } from '@libp2p/pubsub-peer-discovery'
 
 
