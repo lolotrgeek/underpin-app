@@ -46,7 +46,7 @@ export async function dialer() {
     config: { Addresses: { Delegates: [], Bootstrap: [] }, Bootstrap: [] },
   })
 
-  const orbitdb = await OrbitDB.createInstance(ipfs)
+  const orbitdb = await OrbitDB.createInstance(ipfs, {id: peerID})
   const new_db = await orbitdb.log("underpin")
 
   return { orbitdb, new_db }

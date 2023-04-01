@@ -20,6 +20,7 @@ function App() {
     const init = async () => {
       try {
         const db = await (await dialer()).new_db
+        setDb(db)
         setImpact(0)
       } catch (e) {
         console.log(e)
@@ -39,7 +40,7 @@ function App() {
         await db.load()
         // Listen for updates from peers
         db.events.on("replicated", address => {
-          console.log(db.iterator({ limit: 1 }).collect())
+          console.log(db.iterator({ limit: -1, reverse: true}).collect())
         })
       } catch (e) {
         console.log(e)
@@ -47,32 +48,6 @@ function App() {
     }
     loadDB()
   }, [db])
-
-  useEffect(() => {
-    // updateStatus("ipfs is ready " + peerID.toString())
-    // // Lets log out the number of peers we have every 2 seconds
-
-    // let said_hi = 0
-
-    // ipfs.pubsub.subscribe('msg', evt => {
-    //   let msg = decodeMessage(evt.data)
-    //   updateMessage(msg)
-    // })
-
-    // setInterval(async () => {
-    //   try {
-    //     const peers = await ipfs.swarm.addrs()
-    //     updatePeerList(`Peers: ${peers.map(peer => peer.id).join(', \n')}`)
-
-    //     said_hi++
-    //     let msg = new TextEncoder().encode(JSON.stringify({ signer: peerID.toString(), value: "hello from " + peerID.toString() + " " + said_hi }))
-    //     await ipfs.pubsub.publish('msg', msg)
-
-    //   } catch (err) {
-    //     log('An error occurred trying to check our peers:', err)
-    //   }
-    // }, 2000)
-  }, [])
 
   const handleAction = async params => {
     try {
