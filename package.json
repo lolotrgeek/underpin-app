@@ -33,6 +33,7 @@
     "https-browserify": "^1.0.0",
     "ipfs": "^0.66.0",
     "ipfs-core": "^0.18.0",
+    "ipfs-log": "^6.0.0",
     "ipfs-repo-migrations": "^15.0.0",
     "libp2p": "^0.43.2",
     "libp2p-pnet": "^0.1.0",
