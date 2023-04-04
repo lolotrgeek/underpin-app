@@ -45,9 +45,9 @@ export async function dialer() {
     libp2p: libp2pBundle,
     config: { Addresses: { Delegates: [], Bootstrap: [] }, Bootstrap: [] },
   })
-
-  const orbitdb = await OrbitDB.createInstance(ipfs, {id: peerID})
+  const orbitdb = await OrbitDB.createInstance(ipfs, { peerId: peerID.toString(), id: peerID.toString() })
   const new_db = await orbitdb.log("underpin")
+  await new_db.load()
 
   return { orbitdb, new_db }
 }
