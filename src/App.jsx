@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './styles/App.css';
 import { calc_impact } from './app/impact';
-import { decodeMessage } from './app/utils.js'
-import { dialer } from './app/dialer.js'
-
-// const swarmKeyBuffer = Buffer("2F6B65792F737761726D2F70736B2F312E302E302F0A2F6261736531362F0A356238393035363166396262333532323531313233323765613333643661393634666331376636366434396432366562613262333162626339653439636461630A", "hex")
 
 function App() {
   const [block, setBlock] = useState('')
@@ -19,7 +15,7 @@ function App() {
   useEffect(() => {
     const init = async () => {
       try {
-        const db = await (await dialer()).new_db
+        const db = []
         setDb(db)
         setImpact(0)
       } catch (e) {
@@ -37,11 +33,6 @@ function App() {
     const loadDB = async () => {
       try {
         if (!db) return
-        await db.load()
-        // Listen for updates from peers
-        db.events.on("replicated", address => {
-          console.log(db.iterator({ limit: -1, reverse: true}).collect())
-        })
       } catch (e) {
         console.log(e)
       }
@@ -55,8 +46,7 @@ function App() {
       console.log(params)
       let impact_prediction = calc_impact({ before: state, after: params.state }, params.action)
       // let hash = await addBlock({ actor, impact: impact_prediction.impact, action: params.action, state: params.state }, db)
-      let hash = await db.add({ actor, impact: impact_prediction.impact, action: params.action, state: params.state })
-      console.log(hash)
+      let data = { actor, impact: impact_prediction.impact, action: params.action, state: params.state }
       setImpact(impact_prediction.impact)
       // setBlock(hash)
     } catch (error) {
@@ -68,8 +58,7 @@ function App() {
   const handleUpdate = async () => {
     try {
       // let last_block = await db.get(block);
-      let block = await db.iterator({ limit: 1, reverse: true }).collect()[0]
-      console.log(block);
+      let block = { hash: '123', payload: { value: { actor: '123', impact: 123, action: 123, state: 123 } } }
       setImpact(block.payload.value.impact)
       setState(block.payload.value.state)
       setBlock(block.hash)

@@ -2,8 +2,6 @@ import { defineConfig } from "vite";
 import viteTsconfigPaths from "vite-tsconfig-paths";
 import svgrPlugin from "vite-plugin-svgr";
 import react from '@vitejs/plugin-react'
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
-import inject from '@rollup/plugin-inject'
 import nodePolyfills from 'vite-plugin-node-stdlib-browser'
 
 // https://vitejs.dev/config/
@@ -29,7 +27,7 @@ export default defineConfig({
       path: "path-browserify",
     },
   },
-  plugins: [nodePolyfills(),react()],
+  plugins: [viteTsconfigPaths(),nodePolyfills(),react()],
   optimizeDeps: { // 👈 optimizedeps
     esbuildOptions: {
       target: "esnext",
