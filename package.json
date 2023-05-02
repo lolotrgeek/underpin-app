@@ -14,7 +14,7 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "main": "src/main.js",
+  "main": "src/main.tsx",
   "license": "MIT",
   "browser": {
     "crypto": false
