@@ -1,13 +1,20 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App'
-import './styles/index.css'
-import { Buffer } from 'buffer/'
-globalThis.Buffer = Buffer
-global.Buffer = Buffer
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { configure } from 'mobx';
+import './styles/index.css';
+import App from './App';
+import { StoreProvider } from './store/Provider';
+import { Store } from './store/store';
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+// initialize mobx
+configure({ enforceActions: 'observed' });
+
+const container = document.getElementById('root');
+const root = createRoot(container!);
+root.render(
   <React.StrictMode>
-    <App />
+    <StoreProvider store={new Store()}>
+      <App />
+    </StoreProvider>
   </React.StrictMode>,
-)
+);

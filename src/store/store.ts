@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx'
 import * as api from '../app/api'
-import { Actor, SocketEvents, State } from '../shared/types'
+import { Actor, SocketEvents } from '../shared/types'
 
 export class Store {
   constructor() {
