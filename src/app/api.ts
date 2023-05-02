@@ -86,7 +86,7 @@ export const createActor = async (name:string) => {
 
 // do we need this? or can we auto create when we do a txn?
 export const createInvoice = async (actor:string) => {
-  return await httpPost(`actor/${actor}/invoice`)
+  return await httpPost(`actors/${actor}/invoice`)
 }
 
 export const assignImpact = async (actorId:number, hash: string) => {
@@ -96,5 +96,5 @@ export const assignImpact = async (actorId:number, hash: string) => {
 }
 
 export const verifyActor = async (actorId:number) => {
-  return await httpPost(`actor/${actorId}/verify`)
+  return await httpPost(`actors/${actorId}/verify`)
 }

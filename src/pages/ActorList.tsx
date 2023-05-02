@@ -11,7 +11,7 @@ const ActorList: React.FC = () => {
   if (store.actors.length === 0) {
     return (
       <Jumbotron style={{ backgroundColor: '#fff' }}>
-        <h1>Welcome to r/builders</h1>
+        <h1>Welcome</h1>
         <p className="lead">
           It's a ghost town in here. Get the party started by creating the first actor.
         </p>
@@ -25,7 +25,6 @@ const ActorList: React.FC = () => {
   return (
     <>
       <h2>
-        r/builders
         <Button onClick={store.gotoCreate} className="mr-2 float-right">
           Create a Actor
         </Button>

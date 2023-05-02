@@ -26,6 +26,7 @@ const ActorCard: React.FC<Props> = ({ actor }) => {
           )}
         </Card.Subtitle>
         {/* <Card.Text>{actor.content}</Card.Text> */}
+        <Card.Text>{actor.name}</Card.Text>
       </Card.Body>
       <Card.Footer className="d-flex justify-content-between">
         <h5 className="mt-1">

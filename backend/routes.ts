@@ -50,7 +50,7 @@ export const createActor = async (req: Request, res: Response) => {
   // sign the message to obtain a signature
   const { signature } = await rpc.signMessage({ msg })
 
-  const actor = await db.createActor(alias, signature, pubkey)
+  const actor = await db.createActor(alias, name, signature, pubkey)
   res.status(201).send(actor)
 }
 
@@ -99,7 +99,7 @@ export const verifyActor = async (req: Request, res: Response) => {
     throw new Error('You cannot verify your own actors!')
 
   const rpc = nodeManager.getRpc(verifyingNode.token)
-  const msg = Buffer.from(actor).toString('base64')
+  const msg = Buffer.from(actor.name).toString('base64')
   const { signature } = actor
   const { pubkey, valid } = await rpc.verifyMessage({ msg, signature })
 

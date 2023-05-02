@@ -19,7 +19,7 @@ const CreateActor: React.FC = () => {
   return (
     <Form onSubmit={handleSubmit}>
       <Card>
-        <Card.Header>Create a new Post</Card.Header>
+        <Card.Header>Create a new Actor</Card.Header>
         <Card.Body>
           <Form.Group controlId="name">
             <Form.Label>Name</Form.Label>

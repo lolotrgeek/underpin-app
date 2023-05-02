@@ -1,5 +1,6 @@
 export interface Actor {
   id: number
+  name: string
   username: string
   impact: number
   signature: string

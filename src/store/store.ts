@@ -139,7 +139,7 @@ export class Store {
       const actor = await api.verifyActor(actorId)
       this._updateActor(actor)
     } catch (err:any) {
-      this.error = err.message
+      this.error = `store error: ${err.message}`
     }
   }
 

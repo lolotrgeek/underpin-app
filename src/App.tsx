@@ -1,24 +1,29 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 import { Alert, Badge, Container, Dropdown, Nav, Navbar, NavLink } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import Connect from './pages/Connect'
 import CreateActor from './pages/CreateActor'
-import PostList from './pages/ActorList'
+import ActorList from './pages/ActorList'
 import { useStore } from './store/Provider'
 
 function App() {
   const store = useStore()
 
   const pages: Record<string, ReactNode> = {
-    posts: <PostList />,
+    actors: <ActorList />,
     create: <CreateActor />,
     connect: <Connect />,
   }
 
+  useEffect(() => {
+    console.log(typeof store.balance, store.balance)
+    return () => console.log('unmounting...')
+  }, [])
+
   return (
     <>
       <Navbar bg="dark" variant="dark" expand="md">
-        <Navbar.Brand onClick={store.gotoActors}>Underpin</Navbar.Brand>
+        <Navbar.Brand onClick={store.gotoActors}> Underpin</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
@@ -30,7 +35,7 @@ function App() {
               <>
                 <Navbar.Text>
                   <Badge variant="info" pill className="mr-3">
-                    {store.balance.toLocaleString()} sats
+                    {store.balance} sats
                   </Badge>
                 </Navbar.Text>
                 <Dropdown id="basic-nav-dropdown" alignRight>

@@ -48,6 +48,7 @@ class ActorsDb extends EventEmitter {
 
   async createActor(
     username: string,
+    name: string,
     signature: string,
     pubkey: string,
   ) {
@@ -57,6 +58,7 @@ class ActorsDb extends EventEmitter {
     const actor: Actor = {
       id: maxId + 1, // TODO: use uuid
       username,
+      name,
       impact: 0,
       signature,
       pubkey,
