@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import { existsSync, promises as fs } from 'fs';
-import { Post } from '../src/shared/types';
+import { Actor } from '../src/shared/types';
 
 const DB_FILE = 'db.json';
 
@@ -13,84 +13,81 @@ export interface LndNode {
 }
 
 export interface DbData {
-  posts: Post[];
+  actors: Actor[];
   nodes: LndNode[];
 }
 
 /**
- * The list of events emitted by the PostsDb
+ * The list of events emitted by the ActorsDb
  */
-export const PostEvents = {
-  updated: 'post-updated',
+export const ActorEvents = {
+  updated: 'actor-updated',
 };
 
 /**
- * A very simple file-based DB to store the posts
+ * A very simple file-based DB to store the actors
  */
-class PostsDb extends EventEmitter {
+class ActorsDb extends EventEmitter {
   // in-memory database
   private _data: DbData = {
-    posts: [],
+    actors: [],
     nodes: [],
   };
 
   //
-  // Posts
+  // Actors
   //
 
-  getAllPosts() {
-    return this._data.posts.sort((a, b) => b.votes - a.votes);
+  getAllActors() {
+    return this._data.actors.sort((a, b) => b.impact - a.impact);
   }
 
-  getPostById(id: number) {
-    return this.getAllPosts().find(post => post.id === id);
+  getActorById(id: number) {
+    return this.getAllActors().find(actor => actor.id === id);
   }
 
-  async createPost(
+  async createActor(
     username: string,
-    title: string,
-    content: string,
     signature: string,
     pubkey: string,
   ) {
     // calculate the highest numeric id
-    const maxId = Math.max(0, ...this._data.posts.map(p => p.id));
+    const maxId = Math.max(0, ...this._data.actors.map(p => p.id));
 
-    const post: Post = {
-      id: maxId + 1,
-      title,
-      content,
+    const actor: Actor = {
+      id: maxId + 1, // TODO: use uuid
       username,
-      votes: 0,
+      impact: 0,
       signature,
       pubkey,
       verified: false,
     };
-    this._data.posts.push(post);
+    this._data.actors.push(actor);
 
     await this.persist();
-    this.emit(PostEvents.updated, post);
-    return post;
+    this.emit(ActorEvents.updated, actor);
+    return actor;
   }
 
-  async upvotePost(postId: number) {
-    const post = this._data.posts.find(p => p.id === postId);
-    if (!post) {
-      throw new Error('Post not found');
+  async assignImpact(actorId: number) {
+    const actor = this._data.actors.find(p => p.id === actorId);
+    if (!actor) {
+      throw new Error('Actor not found');
     }
-    post.votes++;
+    //TODO: calc impact here
+    actor.impact++;
     await this.persist();
-    this.emit(PostEvents.updated, post);
+    this.emit(ActorEvents.updated, actor);
   }
 
-  async verifyPost(postId: number) {
-    const post = this._data.posts.find(p => p.id === postId);
-    if (!post) {
-      throw new Error('Post not found');
+  async verifyActor(actorId: number) {
+    const actor = this._data.actors.find(p => p.id === actorId);
+    if (!actor) {
+      throw new Error('Actor not found');
     }
-    post.verified = true;
+    actor.verified = true;
     await this.persist();
-    this.emit(PostEvents.updated, post);
+    this.emit(ActorEvents.updated, actor);
   }
 
   //
@@ -136,9 +133,9 @@ class PostsDb extends EventEmitter {
     if (contents) {
       this._data = JSON.parse(contents.toString());
       if (!this._data.nodes) this._data.nodes = [];
-      console.log(`Loaded ${this._data.posts.length} posts`);
+      console.log(`Loaded ${this._data.actors.length} actors`);
     }
   }
 }
 
-export default new PostsDb();
+export default new ActorsDb();

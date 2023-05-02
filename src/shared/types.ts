@@ -1,15 +1,28 @@
-export interface Post {
-  id: number;
-  title: string;
-  content: string;
-  username: string;
-  votes: number;
-  signature: string;
-  pubkey: string;
-  verified: boolean;
+export interface Actor {
+  id: number
+  username: string
+  impact: number
+  signature: string
+  pubkey: string
+  verified: boolean
+}
+
+export interface State {
+  before: number,
+  after: number
+}
+
+export interface Impact {
+  id:string,
+  impact: number,
+  confidence: {
+    lowerBound:number,
+    uppderBound:number,
+    levelOfConfidence: number
+  }
 }
 
 export const SocketEvents = {
-  postUpdated: 'post-updated',
+  actorUpdated: 'actor-updated',
   invoicePaid: 'invoice-paid',
-};
+}
