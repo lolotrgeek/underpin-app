@@ -6,7 +6,7 @@ import nodeManager, { NodeEvents } from './node-manager'
 import db, { ActorEvents } from './db'
 import * as routes from './routes'
 
-const PORT = 4000
+const PORT = 4444
 
 //
 // Create Express server
